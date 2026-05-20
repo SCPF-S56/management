@@ -15,4 +15,3 @@ module "departments" {
   approvers       = each.value.approvers
   members         = each.value.members
 }
-
