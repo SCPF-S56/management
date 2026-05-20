@@ -1,0 +1,51 @@
+name: "Terraform GitOps"
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '**/*.tf' # Only triggers if a Terraform file is modified
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.tf' # Only triggers on merges containing Terraform changes
+
+jobs:
+  terraform:
+    name: "Terraform Execution"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Get GitHub App Token
+        id: get_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TF_APP_ID }}
+          private-key: ${{ secrets.TF_PRIVATE_KEY }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        run: terraform init
+        env:
+          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
+
+      - name: Terraform Plan
+        if: github.event_name == 'pull_request'
+        run: terraform plan -no-color
+        env:
+          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
+
+      - name: Terraform Apply
+        if: github.event_name == 'push'
+        run: terraform apply -auto-approve
+        env:
+          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
+
