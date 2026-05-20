@@ -6,13 +6,13 @@ on:
       - main
     paths:
       - '**/*.tf'
-      - 'departments/*.json'
+      - '**/*.json'
   push:
     branches:
       - main
     paths:
       - '**/*.tf'
-      - 'departments/*.json'
+      - '**/*.json'
 
 jobs:
   terraform:
