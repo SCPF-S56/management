@@ -5,12 +5,14 @@ on:
     branches:
       - main
     paths:
-      - '**/*.tf' # Only triggers if a Terraform file is modified
+      - '**/*.tf'
+      - 'departments/*.json'
   push:
     branches:
       - main
     paths:
-      - '**/*.tf' # Only triggers on merges containing Terraform changes
+      - '**/*.tf'
+      - 'departments/*.json'
 
 jobs:
   terraform:
@@ -20,14 +22,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Get GitHub App Token
-        id: get_token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.TF_APP_ID }}
-          private-key: ${{ secrets.TF_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -36,17 +30,17 @@ jobs:
       - name: Terraform Init
         run: terraform init
         env:
-          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.TF_PAT }}
 
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         run: terraform plan -no-color
         env:
-          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.TF_PAT }}
 
       - name: Terraform Apply
         if: github.event_name == 'push'
         run: terraform apply -auto-approve
         env:
-          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.TF_PAT }}
 
