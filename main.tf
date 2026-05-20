@@ -16,3 +16,7 @@ module "departments" {
   members         = each.value.members
 }
 
+output "debug_detected_files" {
+  value = local.dept_files
+}
+
