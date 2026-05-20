@@ -1,5 +1,4 @@
-min_reviews = 1
-detailed_reviewers = 1
+detailed_reviewers = true
 allow_self_approval = true
 
 require_both_branch_reviewers = true
