@@ -15,8 +15,3 @@ module "departments" {
   approvers       = each.value.approvers
   members         = each.value.members
 }
-
-output "debug_detected_files" {
-  value = local.dept_files
-}
-
