@@ -1,6 +1,6 @@
 resource "github_team" "approvers" {
   name        = "${var.department_name}-approvers"
-  privacy     = "visible"
+  privacy     = "closed"
 }
 
 resource "github_team_membership" "approvers" {
@@ -12,7 +12,7 @@ resource "github_team_membership" "approvers" {
 
 resource "github_team" "members" {
   name        = "${var.department_name}-members"
-  privacy     = "visible"
+  privacy     = "closed"
 }
 
 resource "github_team_membership" "members" {
